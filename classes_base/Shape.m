@@ -10,18 +10,14 @@ classdef (Abstract) Shape < handle
         ScaleFactor (1,1) double = 1
     end
 
-    methods (Abstract)
-        % Abstract method for area.
-        % Every non-abstract class that inherits from Shape must provide
-        % its own implementation of this method.
-        % Compute the shape area.
-        a = area(obj)
-        
-        % Abstract method for perimeter.
-        % Every non-abstract class that inherits from Shape must provide
-        % its own implementation of this method.
-        % Compute the shape perimeter.
-        p = perimeter(obj)
+    methods (Abstract, Access = protected)
+        % Protected abstract implementation hook for area.
+        % Each concrete subclass must compute its own area here.
+        a = computeArea(obj)
+
+        % Protected abstract implementation hook for perimeter.
+        % Each concrete subclass must compute its own perimeter here.
+        p = computePerimeter(obj)
     end
 
     methods
@@ -50,6 +46,22 @@ classdef (Abstract) Shape < handle
         function scaleFactor = getScaleFactor(obj)
             % Return the current scale factor.
             scaleFactor = obj.ScaleFactor;
+        end
+
+        % Public area method.
+        % Shape owns this public contract and validates that every
+        % concrete subclass returns a finite nonnegative scalar area.
+        function a = area(obj)
+            a = obj.computeArea();
+            validateattributes(a, {'double'}, {'scalar', 'finite', 'nonnegative'});
+        end
+
+        % Public perimeter method.
+        % Shape owns this public contract and validates that every
+        % concrete subclass returns a finite nonnegative scalar perimeter.
+        function p = perimeter(obj)
+            p = obj.computePerimeter();
+            validateattributes(p, {'double'}, {'scalar', 'finite', 'nonnegative'});
         end
     end
 end

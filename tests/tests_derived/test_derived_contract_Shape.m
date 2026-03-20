@@ -15,6 +15,7 @@ classdef test_derived_contract_Shape < matlab.unittest.TestCase
     properties
         ShapeFolder
         DerivedFolder
+        BrokenDerivedFolder
         HelperFolder
     end
 
@@ -35,10 +36,12 @@ classdef test_derived_contract_Shape < matlab.unittest.TestCase
 
             testCase.ShapeFolder = fullfile(projectRoot, 'classes_base');
             testCase.DerivedFolder = fullfile(projectRoot, 'classes_derived');
+            testCase.BrokenDerivedFolder = fullfile(projectRoot, 'classes_derived_broken');
             testCase.HelperFolder = testFileFolder;
 
             addpath(testCase.ShapeFolder, ...
                     testCase.DerivedFolder, ...
+                    testCase.BrokenDerivedFolder, ...
                     testCase.HelperFolder);
         end
     end
@@ -48,6 +51,7 @@ classdef test_derived_contract_Shape < matlab.unittest.TestCase
             % Remove the folders that were added for these tests.
             rmpath(testCase.ShapeFolder, ...
                   testCase.DerivedFolder, ...
+                  testCase.BrokenDerivedFolder, ...
                   testCase.HelperFolder);
         end
     end
@@ -89,6 +93,28 @@ classdef test_derived_contract_Shape < matlab.unittest.TestCase
             obj.setScaleFactor(updatedScaleFactor);
 
             testCase.verifyEqual(obj.getScaleFactor(), updatedScaleFactor);
+        end
+
+        function testAreaReturnsFiniteNonnegativeScalar(testCase, shapeCase)
+            % Every listed concrete subclass should satisfy the public
+            % Shape area contract.
+            obj = shapeCase.createDefault();
+            areaValue = obj.area();
+
+            testCase.verifyTrue(isscalar(areaValue));
+            testCase.verifyTrue(isfinite(areaValue));
+            testCase.verifyGreaterThanOrEqual(areaValue, 0);
+        end
+
+        function testPerimeterReturnsFiniteNonnegativeScalar(testCase, shapeCase)
+            % Every listed concrete subclass should satisfy the public
+            % Shape perimeter contract.
+            obj = shapeCase.createDefault();
+            perimeterValue = obj.perimeter();
+
+            testCase.verifyTrue(isscalar(perimeterValue));
+            testCase.verifyTrue(isfinite(perimeterValue));
+            testCase.verifyGreaterThanOrEqual(perimeterValue, 0);
         end
     end
 end

@@ -55,12 +55,6 @@ classdef Rectangle < Shape
             obj.Width = width;
         end
 
-        % Getter method for Width.
-        % Returns the current unscaled width stored in this object.
-        function width = getWidth(obj)
-            width = obj.Width;
-        end
-
         % Setter method for Height.
         % Because Rectangle inherits from handle through Shape, this
         % method modifies the existing object directly.
@@ -68,21 +62,30 @@ classdef Rectangle < Shape
             obj.Height = height;
         end
 
+        % Getter method for Width.
+        % Returns the current unscaled width stored in this object.
+        function width = getWidth(obj)
+            width = obj.Width;
+        end
+        
         % Getter method for Height.
         % Returns the current unscaled height stored in this object.
         function height = getHeight(obj)
             height = obj.Height;
         end
 
-        % Compute the area of the rectangle after scaling is applied.
-        function a = area(obj)
+    end
+
+    methods (Access = protected)
+        % Compute the rectangle area before the Shape-level validation step.
+        function a = computeArea(obj)
             effectiveWidth = obj.Width * obj.ScaleFactor;
             effectiveHeight = obj.Height * obj.ScaleFactor;
             a = effectiveWidth * effectiveHeight;
         end
 
-        % Compute the perimeter of the rectangle after scaling is applied.
-        function p = perimeter(obj)
+        % Compute the rectangle perimeter before the Shape-level validation step.
+        function p = computePerimeter(obj)
             effectiveWidth = obj.Width * obj.ScaleFactor;
             effectiveHeight = obj.Height * obj.ScaleFactor;
             p = 2 * (effectiveWidth + effectiveHeight);

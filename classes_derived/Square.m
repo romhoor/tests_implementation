@@ -51,14 +51,17 @@ classdef Square < Shape
             side = obj.Side;
         end
 
-        % Compute the area of the square after scaling is applied.
-        function a = area(obj)
+    end
+
+    methods (Access = protected)
+        % Compute the square area before the Shape-level validation step.
+        function a = computeArea(obj)
             effectiveSide = obj.Side * obj.ScaleFactor;
             a = effectiveSide^2;
         end
 
-        % Compute the perimeter of the square after scaling is applied.
-        function p = perimeter(obj)
+        % Compute the square perimeter before the Shape-level validation step.
+        function p = computePerimeter(obj)
             effectiveSide = obj.Side * obj.ScaleFactor;
             p = 4 * effectiveSide;
         end

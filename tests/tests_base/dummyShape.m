@@ -15,17 +15,20 @@ classdef dummyShape < Shape
             obj@Shape(varargin{:});
         end
 
-        % Implementation of the abstract area method.
-        % A concrete subclass must define this method, even when the class
-        % exists only for testing. The returned value is intentionally 0.
-        function a = area(~)
+    end
+
+    methods (Access = protected)
+        % Implementation hook for the abstract area computation.
+        % The returned value is intentionally 0 because this class exists
+        % only to support testing of the Shape base class.
+        function a = computeArea(~)
             a = 0;
         end
 
-        % Implementation of the abstract perimeter method.
-        % A concrete subclass must define this method, even when the class
-        % exists only for testing. The returned value is intentionally 0.
-        function p = perimeter(~)
+        % Implementation hook for the abstract perimeter computation.
+        % The returned value is intentionally 0 because this class exists
+        % only to support testing of the Shape base class.
+        function p = computePerimeter(~)
             p = 0;
         end
     end

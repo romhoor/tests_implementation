@@ -62,3 +62,19 @@ function testSetterUpdatesScaleFactorInPlace(testCase)
 
     testCase.verifyEqual(obj.getScaleFactor(), 32);
 end
+
+function testAreaReturnsValidatedNonnegativeScalar(testCase)
+% Shape now owns the public area contract, so this test verifies that the
+% base-class area method accepts the dummy subclass output and returns it.
+    obj = dummyShape();
+
+    testCase.verifyEqual(obj.area(), 0);
+end
+
+function testPerimeterReturnsValidatedNonnegativeScalar(testCase)
+% Shape now owns the public perimeter contract, so this test verifies that
+% the base-class perimeter method accepts the dummy subclass output.
+    obj = dummyShape();
+
+    testCase.verifyEqual(obj.perimeter(), 0);
+end

@@ -49,14 +49,17 @@ classdef Circle < Shape
             radius = obj.Radius;
         end
 
-        % Compute the area of the circle after scaling is applied.
-        function a = area(obj)
+    end
+
+    methods (Access = protected)
+        % Compute the circle area before the Shape-level validation step.
+        function a = computeArea(obj)
             effectiveRadius = obj.Radius * obj.ScaleFactor;
             a = pi * effectiveRadius^2;
         end
 
-        % Compute the perimeter of the circle after scaling is applied.
-        function p = perimeter(obj)
+        % Compute the circle perimeter before the Shape-level validation step.
+        function p = computePerimeter(obj)
             effectiveRadius = obj.Radius * obj.ScaleFactor;
             p = 2 * pi * effectiveRadius;
         end

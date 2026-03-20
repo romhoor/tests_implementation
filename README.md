@@ -2,8 +2,24 @@
 
 This repository shows a simple way to test an abstract base class in MATLAB.
 
-The base class is `Shape`, which cannot be instantiated directly because it
-declares the abstract methods `area(obj)` and `perimeter(obj)`.
+The base class is `Shape`, which cannot be instantiated directly.
+
+`Shape` owns the public contract:
+
+* `getScaleFactor()` and `setScaleFactor()`
+* `area()` returns a finite nonnegative scalar
+* `perimeter()` returns a finite nonnegative scalar
+
+Concrete subclasses do not implement the public contract directly.
+They only implement the protected hooks:
+
+* `computeArea()`
+* `computePerimeter()`
+
+This keeps responsibilities in the right place:
+
+* `Shape` validates shared contract rules
+* each child class computes only its own geometry
 
 The project separates testing into two layers:
 
@@ -14,6 +30,7 @@ The project separates testing into two layers:
 
 * `classes_base/` contains shared base classes (the abstract `Shape` class)
 * `classes_derived/` contains real concrete shapes (`Square`, `Rectangle`, `Circle`)
+* `classes_derived_broken/` contains intentionally wrong subclasses used to demonstrate contract failures
 * `tests/tests_base/` contains tests for concrete behavior already implemented in the base class
 * `tests/tests_base/dummyShape.m` is a minimal concrete helper used only to instantiate `Shape` in tests
 * `tests/tests_base/test_base_contract_Shape.m` tests the concrete behavior implemented directly in `Shape`
@@ -28,7 +45,7 @@ The project separates testing into two layers:
 `dummyShape` is the smallest possible concrete subclass:
 
 * it exists only for testing
-* it implements `area()` and `perimeter()` with trivial return values
+* it implements `computeArea()` and `computePerimeter()` with trivial return values
 * it lets the tests instantiate the parent class indirectly
 
 This means the base tests can focus only on the code that actually exists in
@@ -38,14 +55,16 @@ This means the base tests can focus only on the code that actually exists in
 * default scale factor behavior
 * getter behavior
 * setter behavior
+* parent-level validation of `area()` and `perimeter()`
 
 ## Base contract tests
 
 `tests/tests_base/test_base_contract_Shape.m` tests only the concrete logic
 implemented directly in `Shape`.
 
-These tests do not check geometry formulas, because `Shape` does not implement
-them.
+These tests do not check real geometry formulas, because those belong to the
+concrete subclasses. They do check the public contract that `Shape` itself
+owns and validates.
 
 Current base checks include:
 
@@ -53,6 +72,8 @@ Current base checks include:
 * explicit constructor input is stored correctly
 * `getScaleFactor()` returns the stored value
 * `setScaleFactor()` updates the object in place
+* `area()` accepts a valid finite nonnegative value from the subclass hook
+* `perimeter()` accepts a valid finite nonnegative value from the subclass hook
 
 ## Derived contract tests
 
@@ -68,6 +89,11 @@ Each entry in `get_derived_shape_contract_cases.m` defines:
 This keeps the contract test generic while allowing each shape to have its own
 constructor signature.
 
+The derived contract tests now also verify the public `Shape` output rules:
+
+* `area()` must return a finite nonnegative scalar
+* `perimeter()` must return a finite nonnegative scalar
+
 ## Adding or removing a concrete shape
 
 When a new concrete subclass is added:
@@ -82,6 +108,16 @@ When a concrete subclass is removed:
 
 The generic derived contract test file does not need to be changed for each
 new shape.
+
+## Why this design is useful
+
+This setup follows a simple rule: put shared rules where they belong.
+
+So:
+
+* `Shape` checks shared output rules once
+* subclasses only compute shape-specific values
+* the tests verify both the parent contract and the subclass substitution behavior
 
 ## Running the tests
 
