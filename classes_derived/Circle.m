@@ -1,0 +1,64 @@
+% Circle is a concrete subclass of Shape.
+% It stores one unscaled radius and uses the inherited ScaleFactor from
+% Shape when computing area and perimeter.
+classdef Circle < Shape
+    properties (Access = protected)
+        % Radius stored in this specific Circle object.
+        % This is the base radius before scaling is applied.
+        Radius (1,1) double = 1
+    end
+
+    methods
+        % Constructor.
+        % Supported constructor calls are:
+        % Circle()                    -> Radius = 1, ScaleFactor = 1
+        % Circle(radius)             -> Radius = radius, ScaleFactor = 1
+        % Circle(radius, scaleFactor)-> Radius = radius, ScaleFactor = scaleFactor
+        %
+        % The first input always refers to the Circle-specific property
+        % Radius. The optional second input is forwarded to Shape as the
+        % scale factor.
+        function obj = Circle(varargin)
+            if nargin > 2
+                error('Circle:TooManyInputs', ...
+                    'Circle accepts at most two inputs: radius and scaleFactor.');
+            end
+
+            if nargin < 1
+                radius = 1;
+            else
+                radius = varargin{1};
+            end
+
+            % Forward only the optional second input to Shape.
+            obj@Shape(varargin{2:end});
+
+            obj.Radius = radius;
+        end
+
+        % Setter method for Radius.
+        % Because Circle inherits from handle through Shape, this method
+        % modifies the existing object directly.
+        function setRadius(obj, radius)
+            obj.Radius = radius;
+        end
+
+        % Getter method for Radius.
+        % Returns the current unscaled radius stored in this object.
+        function radius = getRadius(obj)
+            radius = obj.Radius;
+        end
+
+        % Compute the area of the circle after scaling is applied.
+        function a = area(obj)
+            effectiveRadius = obj.Radius * obj.ScaleFactor;
+            a = pi * effectiveRadius^2;
+        end
+
+        % Compute the perimeter of the circle after scaling is applied.
+        function p = perimeter(obj)
+            effectiveRadius = obj.Radius * obj.ScaleFactor;
+            p = 2 * pi * effectiveRadius;
+        end
+    end
+end

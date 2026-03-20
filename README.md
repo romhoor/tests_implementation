@@ -136,6 +136,10 @@ For the current `Shape` example:
 * `tests/tests_base/test_base_contract_Shape.m` is the base-contract test file for the concrete behavior implemented in `Shape`
 * `tests/tests_base/dummyShape.m` is the minimal concrete helper class used only to instantiate `Shape` during tests
 * `tests/tests_derived/` is the place for tests of real subclasses such as `Square`
+* `tests/tests_derived/test_derived_contract_Shape.m` is a parameterized test that runs the inherited `Shape` contract checks on every listed concrete subclass
+* `tests/tests_derived/get_derived_shape_contract_cases.m` is the file to update when a concrete subclass is added or removed
+* each field in `get_derived_shape_contract_cases.m` defines how that subclass is constructed for contract testing
+* each field name in `get_derived_shape_contract_cases.m` becomes a separate reported shape case in the test results
 
 ---
 
