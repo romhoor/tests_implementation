@@ -131,6 +131,16 @@ results = runtests({'tests/tests_base/test_base_contract_Shape.m', ...
 table(results)
 ```
 
+Show the compact textual summary:
+
+```matlab
+clear classes
+rehash
+results = runtests({'tests/tests_base/test_base_contract_Shape.m', ...
+                    'tests/tests_derived/test_derived_contract_Shape.m'});
+disp(results)
+```
+
 Run only the base-class contract tests:
 
 ```matlab
@@ -140,6 +150,13 @@ results = runtests('tests/tests_base/test_base_contract_Shape.m');
 table(results)
 ```
 
+Show only the failing base-class tests, if any:
+
+```matlab
+failedResults = results([results.Failed]);
+table(failedResults)
+```
+
 Run only the derived-class contract tests:
 
 ```matlab
@@ -147,4 +164,11 @@ clear classes
 rehash
 results = runtests('tests/tests_derived/test_derived_contract_Shape.m');
 table(results)
+```
+
+Show only the failing derived-class tests, if any:
+
+```matlab
+failedResults = results([results.Failed]);
+table(failedResults)
 ```
