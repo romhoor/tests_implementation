@@ -37,4 +37,53 @@ After that, switch to semantic folders like:
 - fixtures
 - mocks
 
-!! Stubs/Fixtures/Mocks for now have a not very clear intent. they might be used everywhere between contract and intehgation tests.
+# !! Stubs/Fixtures/Mocks for now have a not very clear intent. they might be used everywhere between contract and intehgation tests.
+
+For the FSM area, I would do something like this:
+
+tests/
+    docking_software/
+    fsm_lib/
+        fixtures/
+        DummySimpleState.m
+        DummyTransition.m
+        DummyCompositeState.m
+        FakeSimpleStateFailEntry.m
+        FakeSimpleStateFailUpdate.m
+        FakeSimpleStateFailExit.m
+        FakeTransitionTriggered.m
+        FakeTransitionNotTriggered.m
+
+        base_contract/
+        TestSimpleStateBaseContract.m
+        TestTransitionBaseContract.m
+        TestCompositeStateBaseContract.m
+
+    fsm/
+        fixtures/
+        get_simple_state_contract_cases.m
+        get_transition_contract_cases.m
+        get_composite_state_contract_cases.m
+
+        contract/
+        TestSimpleStateContract.m
+        TestTransitionContract.m
+        TestCompositeStateContract.m
+
+        unit/
+        TestSyncLarState.m
+        TestReachLarState.m
+        TestPreGraspState.m
+        TestGraspState.m
+        TestSyncLarToReachLar.m
+        TestSyncLarToDockingFailing.m
+        TestDockingSoftware.m
+
+        integration/
+        TestIntegratedDSWOpenLoop.m
+        TestIntegratedMockInLoopAllTests.m
+
+        framework/
+        TestDSWTestCaseBase.m
+        TestDSWStateTestCase.m
+        TestDSWTransitionTestCase.m
