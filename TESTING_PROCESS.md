@@ -143,6 +143,13 @@ That is exactly why the derived contract suite exists.
 It checks that each real subclass still behaves like a valid `Shape`, not
 just like a MATLAB class with the right method names.
 
+This also applies to indirect descendants.
+
+For example, if a class inherits from `Square`, and `Square` already inherits
+from `Shape`, then that new class should still be tested against the `Shape`
+contract. The contract belongs to the full subtype chain, not only to the
+direct children of the abstract parent.
+
 ## Current project mapping
 
 * `classes_base/Shape.m` = abstract parent class
