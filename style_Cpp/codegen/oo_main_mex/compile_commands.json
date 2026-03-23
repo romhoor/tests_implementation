@@ -1,0 +1,56 @@
+[
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  main_data.c -o build/glnxa64/main_data.o",
+    "file": "main_data.c",
+    "output": "build/glnxa64/main_data.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  rt_nonfinite.c -o build/glnxa64/rt_nonfinite.o",
+    "file": "rt_nonfinite.c",
+    "output": "build/glnxa64/rt_nonfinite.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  main_initialize.c -o build/glnxa64/main_initialize.o",
+    "file": "main_initialize.c",
+    "output": "build/glnxa64/main_initialize.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  main_terminate.c -o build/glnxa64/main_terminate.o",
+    "file": "main_terminate.c",
+    "output": "build/glnxa64/main_terminate.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  main.c -o build/glnxa64/main.o",
+    "file": "main.c",
+    "output": "build/glnxa64/main.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  interface/_coder_main_api.c -o build/glnxa64/_coder_main_api.o",
+    "file": "interface/_coder_main_api.c",
+    "output": "build/glnxa64/_coder_main_api.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  interface/_coder_main_mex.c -o build/glnxa64/_coder_main_mex.o",
+    "file": "interface/_coder_main_mex.c",
+    "output": "build/glnxa64/_coder_main_mex.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  interface/_coder_main_info.c -o build/glnxa64/_coder_main_info.o",
+    "file": "interface/_coder_main_info.c",
+    "output": "build/glnxa64/_coder_main_info.o"
+  },
+  {
+    "directory": "/home/roman.horshkov/projects/tests_implementation/codegen/oo_main_mex",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -fwrapv -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -DNDEBUG -fno-predictive-commoning -std=c99 -I \".\" -I \"/home/roman.horshkov/projects/tests_implementation\" -I \"./interface\" -I \"/usr/local/MATLAB/R2025b/extern/include\" -I \".\" -DMODEL=main_mex -msse2 -fno-predictive-commoning -Wno-stringop-overflow -Wno-maybe-uninitialized -c  /usr/local/MATLAB/R2025b/extern/version/c_mexapi_version.c -o build/glnxa64/c_mexapi_version.o",
+    "file": "/usr/local/MATLAB/R2025b/extern/version/c_mexapi_version.c",
+    "output": "build/glnxa64/c_mexapi_version.o"
+  }
+]
