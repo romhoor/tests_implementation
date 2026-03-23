@@ -10,6 +10,12 @@ classdef (Abstract) Shape < handle
         ScaleFactor (1,1) double = 1
     end
 
+    properties (Abstract, Constant, Access = protected)
+        % Constant shape identifier defined by each concrete subclass.
+        % The value must match one allowed entry from ShapeIDEnum.
+        shape_id
+    end
+
     methods (Abstract, Access = protected)
         % Protected abstract implementation hook for area.
         % Each concrete subclass must compute its own area here.
@@ -31,6 +37,13 @@ classdef (Abstract) Shape < handle
             end
 
             obj.ScaleFactor = scaleFactor;
+
+            % Each concrete subclass must define a valid non-reserved
+            % shape ID from ShapeIDEnum.
+            if ~Shape.isConcreteShapeIDValid(obj.shape_id)
+                error('Shape:InvalidShapeID', ...
+                    'The subclass constant shape_id must be a valid non-reserved ShapeIDEnum value.');
+            end
         end
 
         % Setter method for ScaleFactor.
@@ -62,6 +75,20 @@ classdef (Abstract) Shape < handle
         function p = perimeter(obj)
             p = obj.computePerimeter();
             validateattributes(p, {'double'}, {'scalar', 'finite', 'nonnegative'});
+        end
+    end
+
+    methods (Static, Access = private)
+        function isValid = isConcreteShapeIDValid(shapeID)
+            % Verify that the subclass-defined constant is one of the
+            % allowed enum values, excluding reserved sentinels.
+            allowedShapeIDs = uint8(enumeration('ShapeIDEnum'));
+
+            isValid = isa(shapeID, 'uint8') && ...
+                      isscalar(shapeID) && ...
+                      ismember(shapeID, allowedShapeIDs) && ...
+                      shapeID > uint8(ShapeIDEnum.SHAPE_ID_INVALID) && ...
+                      shapeID < uint8(ShapeIDEnum.SHAPE_ID_MAX);
         end
     end
 end

@@ -2,6 +2,11 @@
 % It stores one unscaled side length and uses the inherited ScaleFactor
 % from Shape when computing area and perimeter.
 classdef Square < Shape
+    properties (Constant, Access = protected)
+        % Constant identifier for the Square shape type.
+        shape_id = uint8(ShapeIDEnum.SHAPE_ID_SQUARE)
+    end
+
     properties (Access = protected)
         % Side length stored in this specific Square object.
         % This is the base geometric side length before scaling is applied.

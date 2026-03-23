@@ -2,6 +2,11 @@
 % Its purpose is to instantiate the abstract base class indirectly.
 % It is not meant to represent any real geometric object.
 classdef dummyShape < Shape
+    properties (Constant, Access = protected)
+        % Test-only ID value used to satisfy the Shape type contract.
+        shape_id = uint8(ShapeIDEnum.SHAPE_ID_SQUARE)
+    end
+
     methods
         % Constructor.
         % This constructor does not define any default value itself.

@@ -1,4 +1,8 @@
 classdef BrokenSquare < Shape
+    properties (Constant, Access = protected)
+        shape_id = uint8(ShapeIDEnum.SHAPE_ID_SQUARE)
+    end
+
     methods
         function obj = BrokenSquare(side, scaleFactor)
             obj@Shape();   % WRONG: ignores scaleFactor

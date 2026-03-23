@@ -2,6 +2,11 @@
 % It stores one unscaled radius and uses the inherited ScaleFactor from
 % Shape when computing area and perimeter.
 classdef Circle < Shape
+    properties (Constant, Access = protected)
+        % Constant identifier for the Circle shape type.
+        shape_id = uint8(ShapeIDEnum.SHAPE_ID_CIRCLE)
+    end
+
     properties (Access = protected)
         % Radius stored in this specific Circle object.
         % This is the base radius before scaling is applied.

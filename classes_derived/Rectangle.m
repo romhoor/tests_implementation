@@ -2,6 +2,11 @@
 % It stores unscaled width and height values and uses the inherited
 % ScaleFactor from Shape when computing area and perimeter.
 classdef Rectangle < Shape
+    properties (Constant, Access = protected)
+        % Constant identifier for the Rectangle shape type.
+        shape_id = uint8(ShapeIDEnum.SHAPE_ID_RECTANGLE)
+    end
+
     properties (Access = protected)
         % Width stored in this specific Rectangle object.
         % This is the base width before scaling is applied.
@@ -67,7 +72,7 @@ classdef Rectangle < Shape
         function width = getWidth(obj)
             width = obj.Width;
         end
-        
+
         % Getter method for Height.
         % Returns the current unscaled height stored in this object.
         function height = getHeight(obj)
