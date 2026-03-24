@@ -4,7 +4,7 @@ This document describes the testing procedure proposed for MATLAB (C++ style) cl
 
 ## Main idea
 
-When a base class is abstract, two different testing RISKS appear:
+When a base class is abstract, two different verification risks appear:
 
 1. does the implemented code in the abstract base class work correctly?
 2. do the concrete subclasses actually satisfy that inherited base-class contract?
@@ -87,13 +87,11 @@ Derived contract test:
 
 ## Liskov substitution view
 
-These derived contract tests are also a practical way to think about the
-Liskov Substitution Principle.
+These derived contract tests are also a practical way to think about the Liskov Substitution Principle.
 
 ### Definition
 
-A subtype should be usable anywhere its base type is expected, without
-breaking the correctness of the program.
+A subtype should be usable anywhere its base type is expected, without breaking the correctness of the program.
 
 ### Behavioral substitutability
 
@@ -134,6 +132,8 @@ direct children of the abstract parent.
 
 ## This is the proposed baseline of tests that we want to have regardless of the requirements.
 
+A component does not need every test family in the same depth, but every component must be evaluated against this checklist and the applicable baseline tests must be implemented intentionally, not implicitly skipped.
+
 1. Construction contract
 
 - valid construction produces a usable object
@@ -168,6 +168,9 @@ direct children of the abstract parent.
 - same parent-owned contract exercised on all real subclasses
 
 7. Cross-path consistency where applicable
+   - MATLAB vs MEX
+   - MATLAB vs SIL
+   - simulation bus vs shared-type conversion path
 
 
 
@@ -274,8 +277,10 @@ Situation at 24/03/2026
 | FromStructMixIn | `shared_types/FromStructMixIn.m` | 3 | — |
 | ToStructMixIn | `shared_types/ToStructMixIn.m` | 1 | — |
 
-## Tests Structural proposal
+## Repository-wide baseline test families
+
 We should not invent tests class by class from intuition. We should define mandatory baseline suites by component family. In this repo, that means at least: FSM state, transition, config, bus, shared-type conversion contracts, and cross-path consistency tests.
+
 Requirements will later add more targeted tests, but these baseline suites must always exist regardless of requirements.
 
 ### DSW classes testing proposal
@@ -304,7 +309,7 @@ Base-class tests through a dummy transition should verify:
 
 3. ConfigBase family `ConfigBase.m`
 
-Base-class tests through a dummy transition should verify:
+Baseline tests for each config subclass should verify:
 
 - defaults are explicit
 - constructor arguments are applied correctly
@@ -320,8 +325,49 @@ Concrete tests:
 - default values are stable
 - output struct contains the intended codegen-safe properties only
 
-### Possible simplifications
-for LoggingMixIn, I would avoid implying the need of a derived-contract sweep over ~32 classes at the logging level itself. The practical baseline could be:
+### Note on LoggingMixIn scope
 
-- test logging behavior once at base level
-- then rely on SimpleState and Transition contract tests to exercise it indirectly
+Logging should be tested once at the base level. Then rely on SimpleState and Transition contract tests to exercise it indirectly. This avoids a derived-contract sweep over ~32 classes at the logging level itself.
+
+---
+
+# Current Coverage and Gaps
+
+## What Already Exists
+
+TestState.m, TestTransition.m, and TestCompositeState.m are useful foundation tests for the FSM framework. They already exercise important parent-level behavior, but they are not yet organized as a complete, reusable base-contract plus derived-contract methodology. In other words, they are not churn; they are the starting point for formalization.
+
+### Existing FSM Tests
+
+| Test File | What It Tests | Coverage Type | Gap |
+|-----------|---------------|---------------|-----|
+| `TestState.m` | Parent-level behavior of generated concrete `SimpleState` implementations | Base-class + happy-path | Missing: invalid state_id, failed lifecycle branches, repeated calls, invalid construction |
+| `TestTransition.m` | Parent-level behavior of generated concrete `Transition` implementations | Base-class + unit hybrid | Missing: invalid transition_id, failing on_evaluation paths, derived substitution tests |
+| `TestCompositeState.m` | Orchestration/lifecycle behavior of `CompositeState` container | Framework contract + lightweight scenario | Missing: error recovery, complex state progressions, edge cases |
+
+#### Detailed Status
+
+**TestState.m:**
+- ✅ Dynamically generates temporary concrete states
+- ✅ Tests: `get_name()`, `get_id()`, `is_active` lifecycle, `enter()`/`update()`/`exit()` happy-path
+- ❌ Missing: `state_id == NONE_STATE_ID` rejection, failed branch handling, invalid construction detection, repeated-call edge cases
+
+**TestTransition.m:**
+- ✅ Tests: constructor parameter storage, `evaluate()` happy-path, instance independence, repeated calls, inheritance verification
+- ✅ Blends constructor, inheritance, and behavioral checks
+- ❌ Missing: `transition_id == NONE_TRANSITION_ID` rejection, invalid construction with `is_errored = true`, failing `on_evaluation()` semantics, derived real-transition substitution tests
+
+**TestCompositeState.m:**
+- ✅ Tests: child state/transition wiring, initial state storage, `has_valid_configuration`, state lifecycle, multi-state progressions
+- ✅ Most "integration-like" of the three; tests orchestration semantics
+- ❌ Missing: error recovery scenarios, complex failure modes, mode transition edge cases
+
+The existing tests are **good and useful foundations**, but:
+
+- Focused on a few core families (FSM library)
+- Mostly happy-path; limited edge-case coverage
+- Not consistently split into "base contract" and "derived contract"
+- Not applied systematically across all 7+ inheritance families (Logging, SimpleState, Transition, OutputBusBase, ConfigBase, FromStructMixIn, ToStructMixIn)
+- Not clearly framed as mandatory baseline policy
+
+**The proposal does not contradict the existing tests. It formalizes and extends them.**
