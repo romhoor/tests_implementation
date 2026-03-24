@@ -2,6 +2,22 @@
 
 This document describes the testing procedure proposed for MATLAB (C++ style) classes and their concrete subclasses.
 
+## Meeting Memo
+
+1. **Problem**: Testing is ad hoc; we choose tests from intuition rather than from a stable baseline, missing interface, lifecycle, and configuration bugs.
+
+2. **Main proposal**: Define a mandatory baseline procedure that always applies, before requirement-specific tests. Requirements add more later but do not replace the baseline.
+
+3. **Core distinction**: Abstract classes present two different verification risks—is the parent implementation correct, and do concrete subclasses satisfy the inherited contract.
+
+4. **Step 1**: Test the abstract base through a dummy subclass to isolate and verify only the parent's logic, not mixing it with real subclass behavior.
+
+5. **Step 2**: Run the inherited contract on every real subclass to verify substitution, parameter forwarding, API behavior, and invariants. This applies to indirect descendants too.
+
+6. **Baseline always checks**: construction validity, defaults, public API invariants, invalid-input behavior, lifecycle behavior, serialization consistency, base/derived substitutability, compiled-path consistency.
+
+7. **Important**: Not every component needs every test family at equal depth, but every component must be evaluated against the checklist intentionally—no implicit skipping.
+
 ## Main idea
 
 When a base class is abstract, two different verification risks appear:

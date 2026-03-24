@@ -4,6 +4,7 @@ I would use these meanings consistently:
 - contract = tests that every real subclass must satisfy
 - unit = tests of one concrete real class/function’s own behavior
 - integration = tests of multiple components working together
+
 - fixture = test-only support code
 - dummy = minimal concrete class used only to instantiate an abstract parent
 - stub = fixed-answer collaborator
