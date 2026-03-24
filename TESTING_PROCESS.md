@@ -1,49 +1,45 @@
 # Testing Process for Abstract and Inherited Classes
 
-This document describes the testing procedure used in this repository for
-abstract base classes and their concrete subclasses.
+This document describes the testing procedure proposed for MATLAB (C++ style) classes and their concrete subclasses.
 
 ## Main idea
 
-When a base class is abstract, two different testing questions appear:
+When a base class is abstract, two different testing RISKS appear:
 
-1. does the concrete code already implemented in the abstract base class work correctly?
-2. do the real concrete subclasses actually satisfy that inherited base-class contract?
+1. does the implemented code in the abstract base class work correctly?
+2. do the concrete subclasses actually satisfy that inherited base-class contract?
 
-These two questions are related, but they are not the same test target.
+These two questions are related, but they are not the same test target. They lead to a TODO list for every new C++-style component:
 
-In this repository, shared rules are kept in the parent class whenever they
-truly belong to the parent.
+- Does construction produce a valid object?
+- Are all required parameters forwarded/stored correctly?
+- Are defaults explicit and tested?
+- Are units, ranges, dimensions, and enum values validated?
+- Are invalid inputs rejected predictably?
+- Are invariants preserved after every public call?
+- Does behavior remain correct across repeated calls and mode transitions?
+- Can the component be substituted wherever its interface/base type is expected?
+- Is the behavior the same on the compiled path?
 
-That means:
-
-* `Shape` owns the public `area()` and `perimeter()` methods
-* `Shape` validates shared output rules such as finite nonnegative scalar results
-* each child class implements only `computeArea()` and `computePerimeter()`
 
 ## Step 1. Test the abstract base class through a dummy subclass
 
-An abstract class cannot be instantiated directly.
-Because of that, the base class must be tested indirectly through a minimal
-dummy concrete subclass created only for testing.
+An abstract class cannot be instantiated directly. Because of that, the base class must be tested indirectly through a minimal dummy concrete subclass created only for testing.
 
 Purpose of the dummy subclass:
 
 * make the abstract parent instantiable
-* implement the protected abstract computation hooks with trivial bodies only
-* avoid mixing base-class tests with real geometry logic
+* implement the protected abstract computation hooks with trivial bodies only 
+* avoid mixing base-class tests with real subclasses logic
 
 In this repository:
 
-* the abstract base class is `Shape`
-* the dummy helper class is `tests/tests_base/dummyShape.m`
+* abstract base class `Shape`
+* dummy helper class `dummyShape`
 
-The base contract test file is:
+The base contract test file is `test_base_contract_Shape.m`.
 
-* `tests/tests_base/test_base_contract_Shape.m`
-
-That file should test only the concrete behavior implemented directly in the
-abstract parent.
+That file should test only the concrete behavior implemented directly in the abstract parent.
 
 Examples:
 
@@ -53,34 +49,29 @@ Examples:
 * setter behavior
 * shared validation owned by the abstract parent
 
-It should not test subclass-specific formulas such as square area formulas or
-circle perimeter formulas, because those do not belong to the abstract parent.
+It should not test subclass-specific formulas such as square area formulas or circle perimeter formulas, because those do not belong to the abstract parent.
 
 ## Step 2. Test the inherited contract on real concrete subclasses
 
-After the base-class behavior is verified, the same inherited contract should
-be checked on every real concrete subclass.
+After the base-class behavior is verified, the same inherited contract should be checked on every real concrete subclass.
 
 Purpose of these tests:
 
-* confirm that concrete subclasses still respect the inherited base-class behavior
+* confirm that concrete subclasses respect the inherited base-class behavior
 * verify that constructor forwarding is correct
-* verify that inherited getters and setters still behave correctly on real objects
+* verify that inherited getters and setters behave correctly on real objects
 * verify that each real subclass satisfies the parent-owned public contract
 
 In this repository:
 
-* the derived contract test file is `tests/tests_derived/test_derived_contract_Shape.m`
-* the list of participating concrete subclasses is defined in `tests/tests_derived/get_derived_shape_contract_cases.m`
+* the derived contract test file is `test_derived_contract_Shape.m`
+* the list of participating concrete subclasses is defined in `get_derived_shape_contract_cases.m`
 
-This means the derived contract tests do not need one separate test file per
-shape. Instead, the generic contract runner is reused for all registered
-subclasses.
+The derived contract tests do not need one separate test file per shape, the generic contract runner is reused for all registered subclasses.
 
 ## Important distinction
 
-The base contract test and the derived contract test may contain very similar
-assertions, but they do not mean the same thing.
+The base contract test and the derived contract test may contain very similar assertions, but they do not mean the same thing, the test intention is different.
 
 Base contract test:
 
@@ -93,8 +84,6 @@ Derived contract test:
 * target = every real concrete subclass
 * helper object = real subclass instance
 * focus = substitution: each child must behave like a valid `Shape`
-
-So even when the checks look almost identical, the test intention is different.
 
 ## Liskov substitution view
 
@@ -119,17 +108,10 @@ For this to be true:
 
 The subtype must respect the contract of the parent type:
 
-* it must not require more than the parent requires
-* it must not promise less than the parent promises
+* it must not require more than the parent requires (preconditions cannot be strengthened)
+* it must not promise less than the parent promises (postconditions cannot be weakened)
 * it must preserve parent invariants
 * it must not violate the expected object-history behavior
-
-In shorter terms:
-
-* preconditions cannot be strengthened
-* postconditions cannot be weakened
-* invariants must be preserved
-* history constraints must be respected
 
 ### What the tests mean
 
@@ -139,26 +121,55 @@ For this project, the practical substitution test is:
 * then an object of type `Shape` should be replaceable by an object of type `S`
 * without breaking the parent-level expectations
 
-That is exactly why the derived contract suite exists.
-It checks that each real subclass still behaves like a valid `Shape`, not
-just like a MATLAB class with the right method names.
+That is exactly why the derived contract suite exists. It checks that each real subclass still behaves like a valid `Shape`, not just like a MATLAB class with the right method names.
 
-This also applies to indirect descendants.
+#### !!! This also applies to indirect descendants.
 
 For example, if a class inherits from `Square`, and `Square` already inherits
 from `Shape`, then that new class should still be tested against the `Shape`
 contract. The contract belongs to the full subtype chain, not only to the
 direct children of the abstract parent.
 
-## Current project mapping
+# Proposed Baseline Procedure
 
-* `classes_base/Shape.m` = abstract parent class
-* `tests/tests_base/dummyShape.m` = minimal helper subclass for base testing
-* `tests/tests_base/test_base_contract_Shape.m` = tests for concrete behavior implemented in `Shape`
-* `classes_derived/Square.m`, `classes_derived/Rectangle.m`, `classes_derived/Circle.m` = real concrete subclasses
-* `classes_derived_broken/BrokenSquare.m` = intentionally wrong subclass used to demonstrate contract failures
-* `tests/tests_derived/test_derived_contract_Shape.m` = generic inherited-contract test for all registered real subclasses
-* `tests/tests_derived/get_derived_shape_contract_cases.m` = registry of concrete subclasses used in the derived contract suite
+## This is the proposed baseline of tests that we want to have regardless of the requirements.
+
+1. Construction contract
+
+- valid construction produces a usable object
+- invalid or forbidden configuration produces predictable invalid state
+- defaults are explicit and stable
+
+2. Public API contract
+
+- getters/setters or public methods preserve invariants
+- repeated calls are stable
+- lifecycle order is valid
+
+3. Invalid-input behavior
+
+- bad values are rejected, ignored, or flagged predictably
+- no silent corruption
+
+4. History/state behavior
+
+- first call
+- repeated call
+- reset/re-entry/mode change if relevant
+
+5. Serialization/interface contract
+
+- struct conversion, bus conversion, enum conversion, codegen struct export
+- no field-order or semantic mismatch
+
+6. Base/derived substitutability
+
+- abstract parent behavior tested once through dummy subclass
+- same parent-owned contract exercised on all real subclasses
+
+7. Cross-path consistency where applicable
+
+
 
 ## Procedure for a new abstract base class
 
@@ -181,14 +192,136 @@ direct children of the abstract parent.
 5. run the generic derived contract suite
 6. later add subclass-specific unit tests for its own geometry formulas and special behavior
 
-## Running the current tests
+# Practical (wrong) examples
+#### Constructor parameter is accepted but not actually applied
 
-Run all current contract tests:
+What goes wrong:
+A class exposes something like Controller(gain, sampleTime, saturationLimit), but one parameter is forgotten during initialization or forwarded in the wrong order. The object is created successfully, most methods run, and simple unit tests on individual math helpers may still pass. But the component is not the one the caller asked for.
 
-```matlab
-clear classes
-rehash
-results = runtests({'tests/tests_base/test_base_contract_Shape.m', ...
-                    'tests/tests_derived/test_derived_contract_Shape.m'});
-table(results)
-```
+Why contract/interface tests catch it first:
+A contract test checks object-level guarantees immediately after construction:
+
+- the stored configuration matches the requested inputs
+- defaults are explicit
+- invalid combinations are rejected
+- public behavior reflects the configured parameters
+
+Typical tests:
+
+- Construct with non-default values and verify getters/public behavior reflect those exact values.
+- Construct through all supported factory/constructor paths and confirm equivalent configurations behave the same.
+- Verify omitted mandatory parameters fail early.
+
+Why unit tests may miss it:
+A unit test of computeOutput() might use only default construction or test the formula in isolation, so
+the broken initialization path is never exercised.
+
+#### Interface uses valid types but wrong semantics
+
+What goes wrong:
+The interface says setAngle(double) or setScale(double), and the code accepts the value, but one side assumes degrees while another assumes radians, or milliseconds vs seconds, meters vs millimeters. Everything compiles, all types match, values are finite, and local algorithm tests can still pass with carefully chosen inputs.
+
+Typical tests:
+
+- Verify documented physical invariants under known reference inputs.
+- Verify equivalent inputs expressed through different legitimate API paths produce consistent results.
+- Add boundary/representative cases that would clearly diverge if units are wrong.
+- Reject out-of-contract values or impossible ranges.
+
+Why unit tests may miss it:
+Local algorithm tests often assume the caller already gave correct units. They verify “correct math on provided inputs,” not “correct interpretation of the interface.”
+
+#### Component is correct on first call but breaks the history/state contract
+
+What goes wrong:
+A class or module has hidden internal state: initialization flags, cached values, previous-cycle data, mode flags, latched faults. The first call works, but repeated use, reset, re-entry, or mode switching produces incorrect behavior because state was not initialized, cleared, or transitioned correctly.
+
+Why contract/interface tests catch it first:
+The contract of many embedded components is not just input/output for one call. It includes lifecycle:
+
+- after construction
+- after reset
+- after N cycles
+- after mode change
+- after fault clear
+- after reinitialization
+
+Typical tests:
+
+- Verify first-cycle behavior.
+- Verify repeated identical calls remain stable when they should.
+- Verify reset() truly restores the documented initial state.
+- Verify forbidden call sequences fail predictably.
+- Verify mode transitions preserve invariants.
+
+Why unit tests may miss it:
+File-level tests often exercise one function once with mocked data. They do not model object history or call ordering, which is where embedded software often fails.
+
+# DSW
+
+Situation at 24/03/2026
+- docking_software classes: 65
+- simulator classes: 40
+- shared_types classes: 11
+
+| Family | File Path | Direct Subclasses | Notes |
+|--------|-----------|-------------------|-------|
+| Logging | `docking_software/lib/logging/LoggingMixIn.m` | 2 | SimpleState, Transition; ~32 total with composite states |
+| SimpleState | `docking_software/state_machine/fsm_lib/SimpleState.m` | 13 | 17 with base; 16 descendants through CompositeState |
+| Transition | `docking_software/state_machine/fsm_lib/Transition.m` | 14 | 15 with base |
+| OutputBusBase | `simulator/buses/OutputBusBase.m` | 8 | — |
+| ConfigBase | `simulator/config/ConfigBase.m` | — | Effective family size: 8 |
+| FromStructMixIn | `shared_types/FromStructMixIn.m` | 3 | — |
+| ToStructMixIn | `shared_types/ToStructMixIn.m` | 1 | — |
+
+## Tests Structural proposal
+We should not invent tests class by class from intuition. We should define mandatory baseline suites by component family. In this repo, that means at least: FSM state, transition, config, bus, shared-type conversion contracts, and cross-path consistency tests.
+Requirements will later add more targeted tests, but these baseline suites must always exist regardless of requirements.
+
+### DSW classes testing proposal
+
+1. SimpleState base contract `SimpleState.m`. Real-subclasses `SyncLarState.m` `PreGraspState.m` ...
+
+Base-class tests through a dummy subclass should verify:
+
+- state_id must not be NONE_STATE_ID
+- constructor sets has_valid_configuration correctly
+- enter() sets is_active = true only if on_entry() succeeds
+- exit() leaves state active if on_exit() fails
+- update() fails cleanly when configuration is invalid
+- repeated update() calls do not corrupt state
+
+
+2. Transition base contract `Transition.m`. Real-subclass contracts `PreGraspToGrasp.m` `DockingToAborting.m`.
+
+Base-class tests through a dummy transition should verify:
+
+- transition_id cannot be the protected default
+- invalid construction makes evaluate() return errored and not triggered
+- valid construction allows evaluation
+- evaluate() wrapper preserves deterministic output semantics
+
+
+3. ConfigBase family `ConfigBase.m`
+
+Base-class tests through a dummy transition should verify:
+
+- defaults are explicit
+- constructor arguments are applied correctly
+- to_codegen_struct() includes expected fields
+- string and timeseries are excluded as intended
+- seeded configs are reproducible when they should be
+
+example `NavigationConfig.m`
+
+Concrete tests:
+
+- same noise_seed gives same generated seeds and same initial bias values
+- default values are stable
+- output struct contains the intended codegen-safe properties only
+
+### Possible simplifications
+for LoggingMixIn, I would avoid implying the need of a derived-contract sweep over ~32 classes at the logging level itself. The practical baseline could be:
+
+- test logging behavior once at base level
+- then rely on SimpleState and Transition contract tests to exercise it indirectly

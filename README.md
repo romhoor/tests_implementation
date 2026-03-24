@@ -121,13 +121,22 @@ So:
 
 ## Running the tests
 
-Run all current contract tests from the project root in MATLAB:
+Run the MATLAB tests from the `style_Cpp/` folder.
+
+If MATLAB is currently opened at the repository root, switch first:
+
+```matlab
+cd('/home/roman.horshkov/projects/tests_implementation/style_Cpp')
+```
+
+Run all current core contract and initialization tests:
 
 ```matlab
 clear classes
 rehash
 results = runtests({'tests/tests_base/test_base_contract_Shape.m', ...
-                    'tests/tests_derived/test_derived_contract_Shape.m'});
+                    'tests/tests_derived/test_derived_contract_Shape.m', ...
+                    'tests/tests_derived/test_derived_initialization_ShapeID.m'});
 table(results)
 ```
 
@@ -137,7 +146,8 @@ Show the compact textual summary:
 clear classes
 rehash
 results = runtests({'tests/tests_base/test_base_contract_Shape.m', ...
-                    'tests/tests_derived/test_derived_contract_Shape.m'});
+                    'tests/tests_derived/test_derived_contract_Shape.m', ...
+                    'tests/tests_derived/test_derived_initialization_ShapeID.m'});
 disp(results)
 ```
 
@@ -167,6 +177,22 @@ table(results)
 ```
 
 Show only the failing derived-class tests, if any:
+
+```matlab
+failedResults = results([results.Failed]);
+table(failedResults)
+```
+
+Run only the derived initialization `ShapeID` tests:
+
+```matlab
+clear classes
+rehash
+results = runtests('tests/tests_derived/test_derived_initialization_ShapeID.m');
+table(results)
+```
+
+Show only the failing `ShapeID` tests, if any:
 
 ```matlab
 failedResults = results([results.Failed]);
